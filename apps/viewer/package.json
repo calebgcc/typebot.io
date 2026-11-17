@@ -35,6 +35,13 @@
           "command": "tsc --noEmit"
         }
       },
+      "test": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/viewer",
+          "command": "bun test .test.ts"
+        }
+      },
       "test:e2e": {
         "executor": "nx:run-commands",
         "inputs": [

@@ -5,11 +5,13 @@ import type { Settings } from "@typebot.io/settings/schemas";
 import Head from "next/head";
 import Script from "next/script";
 import { useId } from "react";
+import { getSocialPreviewImageUrl } from "@/features/socialPreview/getSocialPreviewImageUrl";
 import { gtmHeadSnippet } from "@/lib/google-tag-manager";
 
 type SEOProps = {
   url: string;
   typebotName: string;
+  publicId: string | null;
   isMatchingViewerUrl?: boolean;
   metadata?: Settings["metadata"];
 };
@@ -17,6 +19,7 @@ type SEOProps = {
 export const SEO = ({
   url,
   typebotName,
+  publicId,
   isMatchingViewerUrl,
   metadata: {
     title,
@@ -28,6 +31,11 @@ export const SEO = ({
   } = {},
 }: SEOProps) => {
   const googleTagManagerScriptId = useId();
+  const socialPreviewImageUrl = getSocialPreviewImageUrl({
+    customImageUrl: imageUrl,
+    publicId,
+    viewerBaseUrl: env.NEXT_PUBLIC_VIEWER_URL[0],
+  });
 
   return (
     <>
@@ -67,10 +75,7 @@ export const SEO = ({
         <meta
           property="og:image"
           itemProp="image"
-          content={
-            imageUrl ??
-            defaultSettings.metadata.imageUrl(env.NEXT_PUBLIC_VIEWER_URL[0])
-          }
+          content={socialPreviewImageUrl}
         />
 
         <meta property="twitter:card" content="summary_large_image" />
@@ -88,10 +93,7 @@ export const SEO = ({
         />
         <meta
           property="twitter:image"
-          content={
-            imageUrl ??
-            defaultSettings.metadata.imageUrl(env.NEXT_PUBLIC_VIEWER_URL[0])
-          }
+          content={socialPreviewImageUrl}
         />
       </Head>
       {isNotEmpty(googleTagManagerId) && (

@@ -64,6 +64,7 @@ export const TypebotPageV3 = ({
       <SEO
         url={url}
         typebotName={name}
+        publicId={publicId}
         metadata={metadata}
         isMatchingViewerUrl={isMatchingViewerUrl}
       />
