@@ -25,6 +25,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { ZodError, type ZodObject } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { BlockCommentsPopover } from "@/features/blockComments/components/BlockCommentsPopover";
 import { TextBubbleEditor } from "@/features/blocks/bubbles/textBubble/components/TextBubbleEditor";
 import { BlockIcon } from "@/features/editor/components/BlockIcon";
 import { useTypebot } from "@/features/editor/providers/TypebotProvider";
@@ -71,6 +72,7 @@ export const BlockNode = ({
   const { typebot, updateBlock } = useTypebot();
   const [isConnecting, setIsConnecting] = useState(false);
   const [isContextMenuOpened, setIsContextMenuOpened] = useState(false);
+  const [isCommentsPopoverOpened, setIsCommentsPopoverOpened] = useState(false);
   const blockRef = useRef<HTMLDivElement | null>(null);
   const [isSettingsPopoverExpanded, setIsSettingsPopoverExpanded] =
     useState(false);
@@ -201,17 +203,32 @@ export const BlockNode = ({
   return openedNodeId === block.id && isTextBubbleBlock(block) ? (
     <ContextMenu.Root onOpenChange={setIsContextMenuOpened}>
       <ContextMenu.Trigger>
-        <TextBubbleEditor
-          id={block.id}
-          initialValue={block.content?.richText ?? []}
-          onChange={handleTextEditorChange}
-          onClose={handleCloseEditor}
-        />
+        <div className="relative">
+          <TextBubbleEditor
+            id={block.id}
+            initialValue={block.content?.richText ?? []}
+            onChange={handleTextEditorChange}
+            onClose={handleCloseEditor}
+          />
+          {typebot && !isAnalytics && (
+            <BlockCommentsPopover
+              typebotId={typebot.id}
+              blockId={block.id}
+              isOpen={isCommentsPopoverOpened}
+              isReadOnly={isReadOnly}
+              onOpen={() => setIsCommentsPopoverOpened(true)}
+              onClose={() => setIsCommentsPopoverOpened(false)}
+            />
+          )}
+        </div>
       </ContextMenu.Trigger>
       <BlockNodeContextMenuPopup
         indices={indices}
         block={block}
         onTurnIntoClick={convertBlock}
+        onCommentClick={
+          isReadOnly ? undefined : () => setIsCommentsPopoverOpened(true)
+        }
       />
     </ContextMenu.Root>
   ) : (
@@ -276,12 +293,25 @@ export const BlockNode = ({
                       />
                     )}
                 </div>
+                {typebot && !isAnalytics && (
+                  <BlockCommentsPopover
+                    typebotId={typebot.id}
+                    blockId={block.id}
+                    isOpen={isCommentsPopoverOpened}
+                    isReadOnly={isReadOnly}
+                    onOpen={() => setIsCommentsPopoverOpened(true)}
+                    onClose={() => setIsCommentsPopoverOpened(false)}
+                  />
+                )}
               </div>
             </ContextMenu.Trigger>
             <BlockNodeContextMenuPopup
               indices={indices}
               block={block}
               onTurnIntoClick={convertBlock}
+              onCommentClick={
+                isReadOnly ? undefined : () => setIsCommentsPopoverOpened(true)
+              }
             />
           </ContextMenu.Root>
         )}

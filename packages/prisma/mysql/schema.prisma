@@ -67,6 +67,7 @@ model User {
   bannedIps                   BannedIp[]
   displayedInAppNotifications Json?
   credentials                 UserCredentials[]
+  blockComments               BlockComment[]
   groupTitlesAutoGeneration   Json?
   preferredLanguage           String?                   @db.VarChar(10)
   termsAcceptedAt             DateTime?
@@ -251,6 +252,7 @@ model Typebot {
   whatsAppCredentialsId   String?
   riskLevel               Int?
   bannedIps               BannedIp[]
+  blockCommentThreads     BlockCommentThread[]
   space                   Space?                    @relation(fields: [spaceId], references: [id], onDelete: SetNull)
   spaceId                 String?
 
@@ -283,6 +285,33 @@ model CollaboratorsOnTypebots {
 
   @@unique([userId, typebotId])
   @@index([typebotId])
+}
+
+model BlockCommentThread {
+  id         String         @id @default(cuid())
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+  typebotId  String
+  blockId    String
+  resolvedAt DateTime?
+  typebot    Typebot        @relation(fields: [typebotId], references: [id], onDelete: Cascade)
+  comments   BlockComment[]
+
+  @@index([typebotId])
+}
+
+model BlockComment {
+  id        String             @id @default(cuid())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @default(now()) @updatedAt
+  threadId  String
+  authorId  String
+  content   String             @db.Text
+  thread    BlockCommentThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  author    User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([threadId])
+  @@index([authorId])
 }
 
 model PublicTypebot {
