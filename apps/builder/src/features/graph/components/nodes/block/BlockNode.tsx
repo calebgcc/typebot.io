@@ -203,17 +203,32 @@ export const BlockNode = ({
   return openedNodeId === block.id && isTextBubbleBlock(block) ? (
     <ContextMenu.Root onOpenChange={setIsContextMenuOpened}>
       <ContextMenu.Trigger>
-        <TextBubbleEditor
-          id={block.id}
-          initialValue={block.content?.richText ?? []}
-          onChange={handleTextEditorChange}
-          onClose={handleCloseEditor}
-        />
+        <div className="relative">
+          <TextBubbleEditor
+            id={block.id}
+            initialValue={block.content?.richText ?? []}
+            onChange={handleTextEditorChange}
+            onClose={handleCloseEditor}
+          />
+          {typebot && !isAnalytics && (
+            <BlockCommentsPopover
+              typebotId={typebot.id}
+              blockId={block.id}
+              isOpen={isCommentsPopoverOpened}
+              isReadOnly={isReadOnly}
+              onOpen={() => setIsCommentsPopoverOpened(true)}
+              onClose={() => setIsCommentsPopoverOpened(false)}
+            />
+          )}
+        </div>
       </ContextMenu.Trigger>
       <BlockNodeContextMenuPopup
         indices={indices}
         block={block}
         onTurnIntoClick={convertBlock}
+        onCommentClick={
+          isReadOnly ? undefined : () => setIsCommentsPopoverOpened(true)
+        }
       />
     </ContextMenu.Root>
   ) : (

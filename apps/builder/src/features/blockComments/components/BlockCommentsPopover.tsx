@@ -83,12 +83,13 @@ export const BlockCommentsPopover = ({
               isReadOnly={isReadOnly}
             />
           ))}
-          {!isReadOnly && openThreadsCount === 0 && (
+          {!isReadOnly && (
             <BlockCommentForm
+              key={blockThreads.length}
               placeholder={t("editor.blockComments.newThreadInput.placeholder")}
               submitLabel={t("editor.blockComments.sendButton.label")}
               isSubmitting={isCreatingThread}
-              isAutoFocused
+              isAutoFocused={blockThreads.length === 0}
               onSubmit={handleNewThreadSubmit}
             />
           )}
