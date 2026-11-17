@@ -6,6 +6,7 @@ import type {
 import type { TurnableIntoParam } from "@typebot.io/forge/types";
 import { ContextMenu } from "@typebot.io/ui/components/ContextMenu";
 import { ArrowRight01Icon } from "@typebot.io/ui/icons/ArrowRight01Icon";
+import { ChatIcon } from "@typebot.io/ui/icons/ChatIcon";
 import { Copy01Icon } from "@typebot.io/ui/icons/Copy01Icon";
 import { RepeatIcon } from "@typebot.io/ui/icons/RepeatIcon";
 import { TrashIcon } from "@typebot.io/ui/icons/TrashIcon";
@@ -18,12 +19,14 @@ type Props = {
   indices: BlockIndices;
   block: BlockV6;
   onTurnIntoClick: (params: TurnableIntoParam, schema: ZodObject<any>) => void;
+  onCommentClick?: () => void;
 };
 
 export const BlockNodeContextMenuPopup = ({
   indices,
   block,
   onTurnIntoClick,
+  onCommentClick,
 }: Props) => {
   const { t } = useTranslate();
   const { deleteBlock, duplicateBlock } = useTypebot();
@@ -49,6 +52,12 @@ export const BlockNodeContextMenuPopup = ({
             onTurnIntoClick={onTurnIntoClick}
           />
         </ContextMenu.SubmenuRoot>
+      )}
+      {onCommentClick && (
+        <ContextMenu.Item onClick={onCommentClick}>
+          <ChatIcon />
+          {t("editor.blockComments.contextMenuItem.label")}
+        </ContextMenu.Item>
       )}
       <ContextMenu.Item onClick={handleDuplicateClick}>
         <Copy01Icon />

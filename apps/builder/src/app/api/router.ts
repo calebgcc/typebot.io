@@ -9,6 +9,7 @@ import { spacesRouter } from "@typebot.io/spaces/orpc/router";
 import { builderWhatsAppRouter } from "@typebot.io/whatsapp/api/router";
 import { z } from "zod";
 import { analyticsRouter } from "@/features/analytics/api/router";
+import { blockCommentsRouter } from "@/features/blockComments/api/router";
 import { googleSheetsRouter } from "@/features/blocks/integrations/googleSheets/api/router";
 import { httpRequestRouter } from "@/features/blocks/integrations/httpRequest/api/router";
 import { openAIRouter } from "@/features/blocks/integrations/openai/api/router";
@@ -66,6 +67,7 @@ export const appRouter: AppRouter = {
   results: resultsRouter,
   theme: themeRouter,
   collaborators: collaboratorsRouter,
+  blockComments: blockCommentsRouter,
   customDomains: customDomainsRouter,
   whatsApp: builderWhatsAppRouter,
   folders: folderRouter,
@@ -100,6 +102,7 @@ export type AppRouter = {
   results: typeof resultsRouter;
   theme: typeof themeRouter;
   collaborators: typeof collaboratorsRouter;
+  blockComments: typeof blockCommentsRouter;
   customDomains: typeof customDomainsRouter;
   whatsApp: typeof builderWhatsAppRouter;
   folders: typeof folderRouter;
